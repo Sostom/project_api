@@ -9,7 +9,7 @@ class Quartier extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['nom', 'ville_id'];
+    protected $fillable = ['name', 'ville_id'];
 
     // Relation avec la ville
     public function ville()

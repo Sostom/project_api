@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('quartiers', function (Blueprint $table) {
             $table->id();
-            $table->string('nom');
+            $table->string('name');
             $table->unsignedBigInteger('ville_id'); // Clé étrangère vers la ville
             $table->foreign('ville_id')->references('id')->on('villes')->onDelete('cascade');
             $table->timestamps();
