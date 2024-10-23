@@ -1,10 +1,21 @@
 <?php
 
+use App\Http\Controllers\Api\AuthController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\DesignationController;
 use App\Http\Controllers\VilleController;
 use App\Http\Controllers\QuartierController;
+
+Route::post('/login',[AuthController::class, 'login']);
+Route::post('/register',[AuthController::class, 'register']);
+
+Route::middleware(['auth:sanctum'])->group(function(){
+    Route::post('/logout', [AuthController::class, 'logout']);
+    Route::get('/profile', [AuthController::class, 'profile']);
+    
+    Route::get('/villes', [VilleController::class, 'index']);
+});
 
 Route::get('/user', function (Request $request) {
     return $request->user();
@@ -20,7 +31,6 @@ Route::delete('designations/{id}', [DesignationController::class, 'destroy']);
 
 
 // Routes personnalisées pour le contrôleur Ville
-Route::get('/villes', [VilleController::class, 'index']);
 Route::post('/villes', [VilleController::class, 'store']);
 Route::get('/villes/{id}', [VilleController::class, 'show']);
 Route::put('/villes/{id}', [VilleController::class, 'update']);
