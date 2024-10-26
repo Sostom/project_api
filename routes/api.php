@@ -6,6 +6,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\DesignationController;
 use App\Http\Controllers\VilleController;
 use App\Http\Controllers\QuartierController;
+use App\Http\Controllers\ProprieteController;
 
 Route::post('/login',[AuthController::class, 'login']);
 Route::post('/register',[AuthController::class, 'register']);
@@ -13,7 +14,7 @@ Route::post('/register',[AuthController::class, 'register']);
 Route::middleware(['auth:sanctum'])->group(function(){
     Route::post('/logout', [AuthController::class, 'logout']);
     Route::get('/profile', [AuthController::class, 'profile']);
-    
+
     Route::get('/villes', [VilleController::class, 'index']);
 });
 
@@ -21,6 +22,8 @@ Route::get('/user', function (Request $request) {
     return $request->user();
 })->middleware('auth:sanctum');
 
+
+Route::apiResource('proprietes', ProprieteController::class);
 
 // Routes personnalisées pour le contrôleur Designation
 Route::get('designations', [DesignationController::class, 'index']);

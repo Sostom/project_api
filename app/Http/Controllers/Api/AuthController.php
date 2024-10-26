@@ -81,7 +81,7 @@ class AuthController extends Controller
         else
         {
             return response()->json([
-                'message' => 'Non connecté'
+                'message' => 'Aucun utilisateur connecté'
             ],404);
 
         }
