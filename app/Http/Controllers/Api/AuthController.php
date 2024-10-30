@@ -13,11 +13,11 @@ class AuthController extends Controller
    public function login(Request $request): JsonResponse
    {
         $request->validate([
-            'email' => 'required|email|max:255',
+            'phone' => 'required|string',
             'password' => 'required|string'
         ]);
 
-        $user = User::where('email', $request->email)->first();
+        $user = User::where('phone', $request->phone)->first();
         
         if(!$user || !Hash::check($request->password, $user->password)){
             return response()->json([
@@ -38,13 +38,15 @@ class AuthController extends Controller
    {
         $request ->validate([
             'name'=> 'required|string|max:255',
-            'email'=> 'required|email|unique:users,email|max:255',
+            'email'=> 'nullable|email|unique:users,email|max:255',
+            'phone'=> 'required|string|unique:users,phone',
             'password'=> 'required|string'
         ]);
 
         $user = User::create([
             'name'=> $request->name,
             'email'=> $request->email,
+            'phone'=> $request->phone,
             'password'=> Hash::make($request->password)
         ]);
 
