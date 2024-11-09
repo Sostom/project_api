@@ -13,16 +13,14 @@ return new class extends Migration
     {
         Schema::create('proprietes', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('designation_id')->constrained()->onDelete('cascade');
-            $table->foreignId('ville_id')->constrained()->onDelete('cascade');
-            $table->foreignId('quartier_id')->nullable()->constrained()->onDelete('set null');
+            $table->unsignedBigInteger('designation_id')->references('id')->on('designations');
+            $table->unsignedBigInteger('ville_id')->references('id')->on('villes');
+            $table->unsignedBigInteger('quartier_id')->nullable()->references('id')->on('quartiers');
             $table->string('indication')->nullable();
-            $table->json('description')->nullable(); // Utilisation de JSON pour stocker les détails comme un tableau
             $table->unsignedBigInteger('prix');
-            $table->string('picture')->nullable(); // Stocker les chemins des photos (par exemple, sous forme de JSON si plusieurs)
             $table->enum('statut', ['disponible', 'occupé'])->default('disponible');
-            $table->foreignId('user_id')->constrained()->onDelete('cascade');
-            $table->timestamps();
+            $table->unsignedBigInteger('user_id')->references('id')->on('users');
+            $table->timestamp('created_at')->useCurrent();
         });
     }
 

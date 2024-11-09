@@ -1,6 +1,6 @@
 <?php
 
-use App\Http\Controllers\Api\AuthController;
+use App\Http\Controllers\AuthController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\DesignationController;
@@ -15,7 +15,6 @@ Route::middleware(['auth:sanctum'])->group(function(){
     Route::post('/logout', [AuthController::class, 'logout']);
     Route::get('/profile', [AuthController::class, 'profile']);
 
-    Route::get('/villes', [VilleController::class, 'index']);
 });
 
 Route::get('/user', function (Request $request) {
@@ -34,6 +33,7 @@ Route::delete('designations/{id}', [DesignationController::class, 'destroy']);
 
 
 // Routes personnalisées pour le contrôleur Ville
+Route::get('/villes', [VilleController::class, 'index']);
 Route::post('/villes', [VilleController::class, 'store']);
 Route::get('/villes/{id}', [VilleController::class, 'show']);
 Route::put('/villes/{id}', [VilleController::class, 'update']);

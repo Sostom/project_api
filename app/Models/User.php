@@ -20,9 +20,11 @@ class User extends Authenticatable
      */
     protected $fillable = [
         'name',
-        'email',
         'phone',
         'password',
+        'email',
+		'remember_token',
+        'state'
     ];
 
     /**
@@ -40,11 +42,64 @@ class User extends Authenticatable
      *
      * @return array<string, string>
      */
-    protected function casts(): array
+    protected $casts = [
+        'email_verified_at' => 'datetime',
+    ];
+    
+    public function roles()
+	{
+		return $this->belongsToMany(Role::class, 'role_users')
+					->withPivot('id','role_id')
+					->withTimestamps();
+	}
+    
+    public function hasRole(array $roles){
+        return $this->roles()->whereIn('name', $roles)->first();
+    }
+
+    
+    public static $RegisterRule = [
+        'name' => 'required',
+		'phone' => 'required',
+        'password' => 'required|confirmed',
+        
+    ];
+    
+
+    public static $rulesPasswordForgot = [
+        'phone' => 'required'
+    ];
+
+    public static $rulesMessage = [
+        'name' => 'required',
+        'phone' => 'required',
+        'message' => 'required'
+    ];
+    
+    public static $ResetPasswordRule = [
+        'phone' => 'required',
+        'password' => 'required|confirmed',
+    ];
+
+
+    public static $modifyPasswordRule = [
+        'phone' => 'required',
+        'old_password' => 'required',
+        'password' => 'required|confirmed',
+    ];
+
+    
+    public static $UpdateRule = [
+        'name' => 'required',
+        'phone' => 'required',
+        'email' => 'nullable',
+    ];
+
+    public function getstateAttribute($attib)
     {
         return [
-            'email_verified_at' => 'datetime',
-            'password' => 'hashed',
-        ];
+            '0' => "Bloqué",
+            '1' => "Actif",
+        ][$attib];
     }
 }

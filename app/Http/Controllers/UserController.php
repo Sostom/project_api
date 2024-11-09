@@ -2,36 +2,71 @@
 
 namespace App\Http\Controllers;
 
-use Exception;
-use App\Models\Ville;
-use Illuminate\Http\Request;
-use App\Services\VilleService;
-use Illuminate\Support\Facades\Log;
-use App\Exceptions\ImmoApiException;
-use Illuminate\Database\QueryException;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Http\Request;
+use Illuminate\Database\QueryException;
+use Exception;
+use App\Services\UserService;
+use App\Services\RegisterService;
+use App\Models\User;
+use App\Exceptions\ImmoApiException;
 
-class VilleController extends Controller
+class UserController extends Controller
 {
-     //Create Ville
-    function store(Request $request){
+       //Show all users
+       function index(Request $request){
         try {
-            $validator = Validator::make($request->all(), Ville::$CreateRule);
+            $inputData = $request->all();
+            $user = new UserService();
+            $dataResult = $user->ShowUser($inputData);
+
+            return response()->json([
+                'data' => $dataResult,
+                'status' => "success",
+                'message' => "",
+            ]);
+
+        } catch (ImmoApiException $ex) {
+              Log:: error($ex->getMessage());
+            return response()->json([
+                'status' => "error",
+                'message' => $ex->getMessage(),
+            ]);
+        }
+        catch (QueryException $ex) {
+            Log::error($ex->getMessage());
+            return response()->json([
+                'status' => "error",
+                'message' => "Une erreur interne est survenue lors de l'affichage des utilisateurs.",
+            ]);
+        }
+        catch (Exception $ex) {
+            Log::error($ex->getMessage());
+            return response()->json([
+                'status' => "error",
+                'message' => "Impossible de afficher les utilisateurs. Veuillez réessayer",
+            ]);
+        }
+    }
+
+    //Create users
+    public function store(Request $request){
+        try {
+            $validator = Validator::make($request->all(), User::$RegisterRule);
             if($validator->fails()){
                 return response()->json([
                     'data' => $validator->errors(),
                     'status' => "error",
-                     'message' => "Impossible d'enregistrer la ville. Veuillez corriger puis réessayer"
-                ]);
+                     'message' => "Impossible d'enrégistrer cet utilisateur. Veuillez corriger puis réessayer",   ]);
             }
-
             $inputData = $request->all();
             $name = $inputData["name"];
-            $image = $inputData["image"];
+            $phone = $inputData["phone"];
+            $password = $inputData["password"];
 
-
-            $service = new VilleService();
-            $dataResult = $service->CreateVille($name, $image);
+            $service = new RegisterService();
+            $dataResult = $service->Register($name, $password, $phone);
 
             return response()->json([
                 'data' => $dataResult,
@@ -50,26 +85,23 @@ class VilleController extends Controller
             Log::error($ex->getMessage());
             return response()->json([
                 'status' => "error",
-                'message' => "Une erreur interne est survenue lors de l'enregistrer de la ville.",
+                'message' => "Une erreur interne est survenue lors de l'enrégistrement.",
             ]);
         }
         catch (Exception $ex) {
             Log::error($ex->getMessage());
             return response()->json([
                 'status' => "error",
-                'message' => "Impossible d'enregistrer la ville. Veuillez réessayer",
+                'message' => "Impossible de l'enregistrer. Veuillez réessayer",
             ]);
         }
-    }
-    
-    
-    //Show all villes
-    function index(Request $request){
+	}
+
+    //Delete users
+    function deleteuser ($id){
         try {
-            $inputData = $request->all();
-
-            $service = new VilleService();
-            $dataResult = $service->ShowVille($inputData);
+            $service = new UserService();
+            $dataResult = $service->DeleteUser($id);
 
             return response()->json([
                 'data' => $dataResult,
@@ -88,23 +120,23 @@ class VilleController extends Controller
             Log::error($ex->getMessage());
             return response()->json([
                 'status' => "error",
-                'message' => "Une erreur interne est survenue lors de l'affichage des villes.",
+                'message' => "Une erreur interne est survenue lors de la suppression de l'utlisateur.",
             ]);
         }
         catch (Exception $ex) {
             Log::error($ex->getMessage());
             return response()->json([
                 'status' => "error",
-                'message' => "Impossible d'afficher les villes. Veuillez réessayer",
+                'message' => "Impossible de supprimer l'utilisateur. Veuillez réessayer",
             ]);
         }
     }
 
-    //Delete ville 
-    function delete ($id){
+    //Block user
+    function blockuser(Request $request, $id){
         try {
-            $service = new VilleService();
-            $dataResult = $service->DeleteVille($id);
+            $service = new UserService();
+            $dataResult = $service->BlockUser($id);
 
             return response()->json([
                 'data' => $dataResult,
@@ -123,37 +155,23 @@ class VilleController extends Controller
             Log::error($ex->getMessage());
             return response()->json([
                 'status' => "error",
-                'message' => "Une erreur interne est survenue lors de la suppression de cette ville.",
+                'message' => "Une erreur interne est survenue lors du blocage de l'utilisateur.",
             ]);
         }
         catch (Exception $ex) {
             Log::error($ex->getMessage());
             return response()->json([
                 'status' => "error",
-                'message' => "Impossible de supprimer la ville. Veuillez réessayer",
+                'message' => "Impossible de bloquer l'utlisateur. Veuillez réessayer",
             ]);
         }
     }
 
-    //Update ville
-    function update(Request $request, $id){
+    //Unblock User
+    function unblockuser(Request $request, $id){
         try {
-            $validator = Validator::make($request->all(), Ville::$UpdateRule);
-            if($validator->fails()){
-                return response()->json([
-                    'data' => $validator->errors(),
-                    'status' => "error",
-                     'message' => "Impossible de modifier la ville. Veuillez corriger puis réessayer"
-                ]);
-            }
-
-            $inputData = $request->all();
-            $id = $id;
-            $name = $inputData["name"];
-            $image = $inputData["image"] ?? null;
-
-            $service = new VilleService();
-            $dataResult = $service->UpdateVille($id, $name, $image);
+            $service = new UserService();
+            $dataResult = $service->UnBlockUser($id);
 
             return response()->json([
                 'data' => $dataResult,
@@ -172,50 +190,14 @@ class VilleController extends Controller
             Log::error($ex->getMessage());
             return response()->json([
                 'status' => "error",
-                'message' => "Une erreur interne est survenue lors de la modification de la ville.",
+                'message' => "Une erreur interne est survenue lors du déblocage de l'utilisateur.",
             ]);
         }
         catch (Exception $ex) {
             Log::error($ex->getMessage());
             return response()->json([
                 'status' => "error",
-                'message' => "Impossible de modifier la ville. Veuillez réessayer",
-            ]);
-        }
-    }
-
-    //Show single ville
-    function show(Request $request, $id){
-        try {
-            $service = new VilleService();
-            $dataResult = $service->ShowSingleVille($id);
-
-        //result
-            return response()->json([
-                'data' => $dataResult,
-                'status' => "success",
-                'message' => "",
-            ]);
-
-        } catch (ImmoApiException $ex) {
-              Log:: error($ex->getMessage());
-            return response()->json([
-                'status' => "error",
-                'message' => $ex->getMessage(),
-            ]);
-        }
-        catch (QueryException $ex) {
-            Log::error($ex->getMessage());
-            return response()->json([
-                'status' => "error",
-                'message' => "Une erreur interne est survenue lors de l'affichage de la ville.",
-            ]);
-        }
-        catch (Exception $ex) {
-            Log::error($ex->getMessage());
-            return response()->json([
-                'status' => "error",
-                'message' => "Impossible d'afficher la ville. Veuillez réessayer",
+                'message' => "Impossible de débloquer l'utlisateur. Veuillez réessayer",
             ]);
         }
     }
