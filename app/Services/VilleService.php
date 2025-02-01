@@ -35,7 +35,7 @@ class VilleService
             $ville->picture_id = $picture->id;
         }
 
-
+        $ville->save();
         return $ville;
     }
 
@@ -56,7 +56,7 @@ class VilleService
                 $ville = Ville::with('quartiers', 'picture')->orderBy('created_at', 'DESC')->paginate($per_page);
             }
         } else {
-            $ville = Ville::with('quartiers')->orderBy('created_at', 'DESC')->get();
+            $ville = Ville::with('quartiers')->orderBy('id', 'ASC')->get();
         }
 
         return  $ville;

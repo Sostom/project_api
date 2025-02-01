@@ -27,7 +27,7 @@ class VilleController extends Controller
 
             $inputData = $request->all();
             $name = $inputData["name"];
-            $image = $inputData["image"];
+            $image = $inputData["image"] ?? null;
 
 
             $service = new VilleService();

@@ -7,6 +7,8 @@ use App\Models\User;
 use Illuminate\Database\Seeder;
 use Database\Seeders\RoleTableSeeder;
 use Database\Seeders\UserTableSeeder;
+use Database\Seeders\DesignationTableSeeder;
+use Database\Seeders\CautionTypeTableSeeder;
 
 class DatabaseSeeder extends Seeder
 {
@@ -19,5 +21,6 @@ class DatabaseSeeder extends Seeder
 
         $this->call(RoleTableSeeder::class);
         $this->call(UserTableSeeder::class);
+        $this->call(DesignationTableSeeder::class);
     }
 }

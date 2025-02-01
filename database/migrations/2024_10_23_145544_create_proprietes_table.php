@@ -13,14 +13,25 @@ return new class extends Migration
     {
         Schema::create('proprietes', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('designation_id')->references('id')->on('designations');
+            $table->enum('type', ['Ordinaire', 'Sanitaire']);
+            // $table->string('designation')->references('name')->on('designations');
             $table->unsignedBigInteger('ville_id')->references('id')->on('villes');
             $table->unsignedBigInteger('quartier_id')->nullable()->references('id')->on('quartiers');
             $table->string('indication')->nullable();
-            $table->unsignedBigInteger('prix');
+            $table->string('feature');
+            $table->unsignedBigInteger('nbre_habitation');
+            // $table->unsignedBigInteger('nbre_chambre');
+            $table->unsignedBigInteger('nbre_cuisine');
+            $table->unsignedBigInteger('nbre_douche');
+            $table->unsignedBigInteger('loyer');
+            $table->enum('compteur', ['Oui', 'Non']);
+            $table->string('caution_type');
+            $table->string('caution_eau_electricite');
+            $table->string('autres')->nullable();
+            $table->enum('garage', ['Oui', 'Non']);
             $table->enum('statut', ['disponible', 'occupé'])->default('disponible');
             $table->unsignedBigInteger('user_id')->references('id')->on('users');
-            $table->timestamp('created_at')->useCurrent();
+            $table->timestamps();
         });
     }
 

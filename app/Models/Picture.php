@@ -3,7 +3,7 @@
 namespace App\Models;
 
 use App\Models\Ville;
-// use App\Models\ProductPicture;
+use App\Models\ProprietePicture;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 
@@ -19,10 +19,10 @@ class Picture extends Model
 		'path'
 	];
 
-	// public function product_pictures()
-	// {
-	// 	return $this->hasMany(ProductPicture::class);
-	// }
+	public function product_pictures()
+	{
+		return $this->hasMany(ProprietePicture::class);
+	}
 
 	public function ville()
 	{

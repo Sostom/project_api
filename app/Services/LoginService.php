@@ -20,20 +20,20 @@ class LoginService{
         //vérification du mot de passe
         $passwordlUser = $foundUser->password;
         if (!Hash::check($password, $passwordlUser)) {
-            throw new ImmoApiException("Cet mot de passe ne correspond pas. Veuillez corriger puis réessayer");
+            throw new ImmoApiException("Ce mot de passe ne correspond pas. Veuillez corriger puis réessayer");
         }
     
         $tokenResult = $foundUser->createToken('authToken')->plainTextToken;
 
-        $roles = Role::join('role_users', 'roles.id', 'role_users.role_id')
-        ->join('users', 'role_users.user_id', 'users.id')
-        ->where('users.id', $foundUser->id)
-        ->get('roles.name');
+        // $roles = Role::join('role_users', 'roles.id', 'role_users.role_id')
+        // ->join('users', 'role_users.user_id', 'users.id')
+        // ->where('users.id', $foundUser->id)
+        // ->get('roles.name');
     
         return response()->json([
             'status_code' => 200,
             'access_token' => $tokenResult,
-            'role'=>$roles,
+            // 'role'=>$roles,
             'token_type' => 'Bearer',
         ]);
         

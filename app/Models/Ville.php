@@ -31,7 +31,7 @@ class Ville extends Model
      */
     public static $CreateRule = [
         'name' => 'required',
-		'image' => 'required'
+		'image' => 'nullable'
     ];
 
 	public static $UpdateRule = [
