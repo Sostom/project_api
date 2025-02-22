@@ -486,7 +486,7 @@ class ProprieteController extends Controller
             Log::error($ex->getMessage());
             return response()->json([
                 'status' => "error",
-                'message' => "Une erreur interne est survenue lors de l'affichage.",
+                'message' => "Une erreur interne est survenue lors de l'affichage.".$ex->getMessage(),
             ]);
         } catch (Exception $ex) {
             Log::error($ex->getMessage());
